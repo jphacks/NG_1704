@@ -1,5 +1,8 @@
 # clear
-[![Product Name](https://jphacks-nobum.c9users.io/static/logo.png)](https://www.youtube.com/watch?v=fiX6N48EW8M&feature=youtu.be)
+![clear](spa/static/logo.png)
+
+
+[![clear](youtube.png)](https://www.youtube.com/watch?v=fiX6N48EW8M&feature=youtu.be)
 
 ## 製品概要
 ### 現金 X Tech
@@ -43,19 +46,22 @@ QRコードを読み取るだけで、割り勘を行うグループのルーム
 ## 開発内容・開発技術
 ### 活用した技術
 #### API・データ
-* ありません
+* WebSocket
 
 #### フレームワーク・ライブラリ・モジュール
-* node.js
+* Node.js
+* node Express
+* node ws
 * Vue.js
-* 
+* QArt.js
+* Google App Engine
+
 
 #### デバイス
 * ありません
 
-
 ### 研究内容・事前開発プロダクト（任意）
-* ありません
+* ありません(2日間のみ)
 
 ### 独自開発技術（Hack Dayで開発したもの）
 #### 2日間に開発した独自の機能・技術
