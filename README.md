@@ -2,7 +2,7 @@
 ![clear](spa/static/logo.png)
 
 
-[![Product Name](youtube.png)](https://youtu.be/7JOrLOSPP3M)  
+[![Product Name](clearApp.png)](https://youtu.be/7JOrLOSPP3M)  
 動画上では、プレゼン資料の作成上動作の同期が遅延しているように見えるが、実際にはリアルタイムで処理内容を同期している。
 また、画面の最後で「10900円ずつ、余り0円でした。」とあるが、10900円は支払い金額の合計である。そのため、実際にはここに1人あたりに支払う金額が表示される。
 ## 製品概要
