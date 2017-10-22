@@ -2,7 +2,7 @@
 ![clear](spa/static/logo.png)
 
 
-[![clear](youtube.png)](https://www.youtube.com/watch?v=fiX6N48EW8M&feature=youtu.be)
+[![clear](youtube.png)](https://youtu.be/jDGTKR4FGpU)
 
 ## 製品概要
 ### 現金 X Tech
