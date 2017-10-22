@@ -1,0 +1,194 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>clear</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="static/vue.js"></script>
+    <script src="static/qart.min.js"></script>
+    <script src="static/script.js"></script>
+</head>
+
+<body>
+
+    <div id="vueapp">
+        
+        <transition name="zoom">
+            <div class="share_overlay" v-show="showShare">
+                <div id="qr"></div>
+                <div class="button_large" @click="showShare=false">閉じる</div>
+            </div>
+        </transition>
+        
+        <div v-bind:class="{ blur: showShare }">
+        
+            
+            <div class="logo_title"><img src="static/logo.png" height="29px"></div>
+    
+    
+            <div>
+                
+                <div v-if="!init_state">
+                    
+                </div>
+                
+                <div v-else-if="page.type == '切断'">
+                    
+                    <div>
+                        <h1>切断エラー</h1>
+                        <p class="centerMessage">リロードしてください。</p>
+                    </div>
+                    
+                </div>
+                
+                <div v-else-if="page.type == 'トップ'">
+                    
+                    <div>
+                        <div class="centerMessage">飲み会での割り勘を効率的に！</div>
+                        <div class="button_large" @click="page.type='作成'">集める</div>
+                    </div>
+                    
+                </div>
+                
+                <div v-else-if="page.type == '作成'">
+                    
+                    
+                    <div v-if="!onRoom">
+                        <h1>集める</h1>
+                        
+                        <div class="input_container">
+                            <input type="number" placeholder="合計金額" v-model="input.total">
+                        </div>
+                        
+                        <div class="input_container">
+                            <input type="text" placeholder="名前" v-model="input.name">
+                        </div>
+                        
+                        <div class="button_large" @click="createRoom">開始</div>
+                    </div>
+                    
+                    <div v-else>
+                        <h1>エラー</h1>
+                        <p class="centerMessage">他のグループに参加しているため、参加できません。</p>
+                        <button class="button_large">参加中のグループ</button>
+                    </div>
+                    
+                </div>
+                
+                <div v-else-if="page.type == '部屋'">
+                    
+                    
+                    <div v-if="!pageIsMyRoom">
+                        
+                        <div v-if="page.room_state == 'open'">
+                        
+                            <div v-if="onRoom">
+                                <h1>エラー</h1>
+                                <p>他のグループに参加しています。</p>
+                            </div>
+                            
+                            
+                            <div v-else>
+                                <h1>参加</h1>
+                                <div class="input_container">
+                                        <input type="text" placeholder="名前" v-model="input.name">
+                                </div>
+                                <div class="button_large" @click="enterRoom">参加</div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div v-else-if="page.room_state == 'close'">
+                            <h1>エラー</h1>
+                            <p>締切済みです。</p>
+                        </div>
+                        
+                        <div v-else>
+                            <h1>エラー</h1>
+                            <p>存在しない部屋</p>
+                        </div>
+                        
+                    </div>
+                    
+                
+                    <div v-else-if="room.state == 'acceptance'">
+                        
+                        <div @click="showShare=!showShare" class="button_share">{{userCount}}</div>
+                    
+                        <div v-if="!walletFinished">
+                            <h1>財布の中身</h1>
+                            <div v-for="w of input.wallet" class="wallet_line">
+                                <div class="moneyicon_bill">¥{{w.yen}}</div>
+                                <span class="money_count">× {{w.count}}</span>
+                                <div class="stepper">
+                                    <div @click="if(w.count>0)w.count--" class="minus material-icons">remove</div><div @click="w.count++" class="plus material-icons">add</div>
+                                </div>
+                            </div>
+                            <div class="button_large" @click="sendWallet">確定</div>
+                        </div>
+                        
+                        <div v-else>
+                            <h1>受付中</h1>
+                            
+                            <h2>入力済み</h2>
+                            <ul class="user_list" v-if="room.users_finished.length">
+                                <li v-for="name of room.users_finished">{{name}}<span v-if="name==room.owner" class="ownerBadge">(幹事)</span></li>
+                            </ul>
+                            
+                            <h2 v-if="room.users_working.length">入力中</h2>
+                            <ul class="user_list">
+                                <li v-for="name of room.users_working">{{name}}</li>
+                            </ul>
+                            
+                            <div class="button_large" v-if="isOwner" @click="shutUp">締め切る</div>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                        
+                    <div v-else-if="room.state == 'processing'">
+                        <h1>計算中</h1>
+                        <p class="centerMessage">最適なお金のやりとりを計算中</p>
+                    </div>
+                    
+                        
+                    <div v-else-if="room.state == 'clearing'">
+                        
+                        <div v-if="noMyTickets">
+                            <h1>完了</h1>
+                            <p class="centerMessage">清算が完了しました。<br>{{Number(this.room.total_money) + Number(this.room.amari)}}円ずつ、余り{{this.room.amari}}円でした。</p>
+                            <div class="button_large">明細を表示</div>
+                            <div class="button_large" @click="page.type='トップ'">閉じる</div>
+                        </div>
+                        
+                        <div v-else>
+                            <h1>清算</h1>
+                            <div v-for="ticket of this.room.tickets" v-if="(ticket.user_to == room.name || ticket.user_from == room.name) && ticket.ticket_state == 'open'" class="ticket">
+                                <p class="title" v-if="ticket.user_to == room.name">{{ticket.user_from}} から ¥{{ticket.value | moneysum}}</p>
+                                <p class="title" v-if="ticket.user_from == room.name">{{ticket.user_to}} に ¥{{ticket.value | moneysum}}</p>
+                                <div>
+                                    <span v-for="yen of [10000,5000,1000,500,100,50,10]" v-if="ticket.value[yen] != 0">
+                                        ¥{{yen}} × {{ticket.value[yen]}}, 
+                                    </span>
+                                </div>
+                                <div class="button_large" v-if="ticket.ticket_state == 'open' && ticket.user_to == room.name" @click="closeTicket(ticket.number)">受取</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
